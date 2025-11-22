@@ -2,17 +2,32 @@ const board = document.getElementById('board');
 const currentPlayerDisplay = document.getElementById('current-player');
 const blackScoreDisplay = document.getElementById('black-score');
 const whiteScoreDisplay = document.getElementById('white-score');
+const levelSelect = document.getElementById('level');
+const startGameButton = document.getElementById('start-game');
+const setupDiv = document.getElementById('setup');
+const gameDiv = document.getElementById('game');
 
 let boardState = Array(8).fill().map(() => Array(8).fill(null));
 let currentPlayer = 'black';
+let aiLevel = 1;
 
-// Initialize board
+startGameButton.addEventListener('click', () => {
+    aiLevel = parseInt(levelSelect.value);
+    setupDiv.style.display = 'none';
+    gameDiv.style.display = 'block';
+    initBoard();
+});
+
 function initBoard() {
+    boardState = Array(8).fill().map(() => Array(8).fill(null));
     // Place initial pieces
     boardState[3][3] = 'white';
     boardState[3][4] = 'black';
     boardState[4][3] = 'black';
     boardState[4][4] = 'white';
+
+    currentPlayer = 'black';
+    currentPlayerDisplay.textContent = 'Svart';
 
     renderBoard();
     updateScores();
@@ -165,8 +180,19 @@ function aiMove() {
         return;
     }
 
-    // Choose random move
-    const move = validMoves[Math.floor(Math.random() * validMoves.length)];
+    let move;
+    if (aiLevel === 1) {
+        // Random move
+        move = validMoves[Math.floor(Math.random() * validMoves.length)];
+    } else {
+        // Strategic move: choose highest heuristic value
+        move = validMoves.reduce((best, current) => {
+            const bestScore = getHeuristicScore(best.row, best.col);
+            const currentScore = getHeuristicScore(current.row, current.col);
+            return currentScore > bestScore ? current : best;
+        });
+    }
+
     const { row, col } = move;
 
     // Place piece
@@ -192,4 +218,24 @@ function aiMove() {
     }
 }
 
-initBoard();
+function getHeuristicScore(row, col) {
+    // Simple heuristic: corners are good, edges next to corners are bad
+    const cornerBonus = 10;
+    const badEdgePenalty = -5;
+    let score = 0;
+
+    if ((row === 0 || row === 7) && (col === 0 || col === 7)) {
+        score += cornerBonus;
+    } else if ((row === 0 || row === 7 || col === 0 || col === 7) &&
+               !((row === 0 || row === 7) && (col === 0 || col === 7))) {
+        // Edge but not corner
+        if ((row === 0 && col === 1) || (row === 0 && col === 6) ||
+            (row === 7 && col === 1) || (row === 7 && col === 6) ||
+            (col === 0 && row === 1) || (col === 0 && row === 6) ||
+            (col === 7 && row === 1) || (col === 7 && row === 6)) {
+            score += badEdgePenalty;
+        }
+    }
+
+    return score;
+}

@@ -8,10 +8,20 @@
 </head>
 <body>
     <h1>Othello</h1>
-    <div id="board"></div>
-    <div id="info">
-        <p>Nuvarande spelare: <span id="current-player">Svart</span></p>
-        <p>Svarta: <span id="black-score">2</span> | Vita: <span id="white-score">2</span></p>
+    <div id="setup">
+        <label for="level">Välj AI-nivå:</label>
+        <select id="level">
+            <option value="1">Nivå 1: Slumpmässig</option>
+            <option value="2">Nivå 2: Strategisk</option>
+        </select>
+        <button id="start-game">Starta spel</button>
+    </div>
+    <div id="game" style="display: none;">
+        <div id="board"></div>
+        <div id="info">
+            <p>Nuvarande spelare: <span id="current-player">Svart</span></p>
+            <p>Svarta: <span id="black-score">2</span> | Vita: <span id="white-score">2</span></p>
+        </div>
     </div>
     <script src="script.js"></script>
 </body>
