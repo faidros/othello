@@ -59,9 +59,11 @@ function renderBoard() {
 }
 
 function makeMove(row, col) {
+    alert("makeMove called for " + currentPlayer + " row " + row + " col " + col);
     if (boardState[row][col] !== null) return;
 
     const validMoves = getValidMoves(currentPlayer);
+    alert("validMoves length: " + validMoves.length);
     if (!validMoves.some(move => move.row === row && move.col === col)) return;
 
     // Place piece
@@ -73,14 +75,15 @@ function makeMove(row, col) {
     // Switch player
     currentPlayer = currentPlayer === 'black' ? 'white' : 'black';
     currentPlayerDisplay.textContent = currentPlayer === 'black' ? 'Svart' : 'AI';
+    alert("switched to " + currentPlayer);
 
     renderBoard();
     updateScores();
+    alert("After updateScores, currentPlayer: " + currentPlayer);
 
     // If it's AI's turn, make AI move after a short delay
     if (currentPlayer === 'white') {
-        isAiThinking = true;
-        renderBoard(); // Update to disable clicks
+        alert("AI turn");
         setTimeout(() => aiMove(), 500);
     } else {
         // Check for game over or pass
