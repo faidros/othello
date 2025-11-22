@@ -4,7 +4,7 @@ Ett enkelt webbaserat Othello-spel byggt med HTML, CSS och JavaScript.
 
 ## Version
 
-1.3
+1.4
 
 ## Funktioner
 
