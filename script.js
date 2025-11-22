@@ -232,6 +232,15 @@ function aiMove() {
             const currentScore = minimax(currentBoard, 2, false);
             return currentScore > bestScore ? current : best;
         });
+    } else if (aiLevel === 5) {
+        // Master: minimax depth 3
+        move = validMoves.reduce((best, current) => {
+            const bestBoard = simulateMove(boardState, best, currentPlayer);
+            const bestScore = minimax(bestBoard, 3, false);
+            const currentBoard = simulateMove(boardState, current, currentPlayer);
+            const currentScore = minimax(currentBoard, 3, false);
+            return currentScore > bestScore ? current : best;
+        });
     }
 
     const { row, col } = move;
