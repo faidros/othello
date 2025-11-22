@@ -189,7 +189,6 @@ function updateScores() {
 }
 
 function aiMove() {
-    console.log("AI move executed");
     const validMoves = getValidMoves(currentPlayer);
     if (validMoves.length === 0) {
         // Pass turn
