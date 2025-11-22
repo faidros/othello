@@ -247,3 +247,9 @@ function getHeuristicScore(row, col) {
 
     return score;
 }
+
+// Auto start with level 1
+aiLevel = 1;
+setupDiv.style.display = 'none';
+gameDiv.style.display = 'block';
+initBoard();
