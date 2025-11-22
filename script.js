@@ -175,7 +175,21 @@ function getWinner() {
     return 'Oavgjort!';
 }
 
+function updateScores() {
+    let black = 0;
+    let white = 0;
+    for (let row = 0; row < 8; row++) {
+        for (let col = 0; col < 8; col++) {
+            if (boardState[row][col] === 'black') black++;
+            else if (boardState[row][col] === 'white') white++;
+        }
+    }
+    blackScoreDisplay.textContent = black;
+    whiteScoreDisplay.textContent = white;
+}
+
 function aiMove() {
+    console.log("AI move executed");
     const validMoves = getValidMoves(currentPlayer);
     if (validMoves.length === 0) {
         // Pass turn
