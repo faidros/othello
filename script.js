@@ -77,11 +77,11 @@ function makeMove(row, col) {
     renderBoard();
     updateScores();
 
-    // If it's AI's turn, make AI move after a short delay
+    // If it's AI's turn, make AI move
     if (currentPlayer === 'white') {
         isAiThinking = true;
         renderBoard(); // Update to disable clicks
-        setTimeout(() => aiMove(), 500);
+        aiMove();
     } else {
         // Check for game over or pass
         const nextValidMoves = getValidMoves(currentPlayer);
@@ -172,6 +172,19 @@ function getWinner() {
     return 'Oavgjort!';
 }
 
+function updateScores() {
+    let black = 0;
+    let white = 0;
+    for (let row = 0; row < 8; row++) {
+        for (let col = 0; col < 8; col++) {
+            if (boardState[row][col] === 'black') black++;
+            else if (boardState[row][col] === 'white') white++;
+        }
+    }
+    blackScoreDisplay.textContent = black;
+    whiteScoreDisplay.textContent = white;
+}
+
 function aiMove() {
     const validMoves = getValidMoves(currentPlayer);
     if (validMoves.length === 0) {
@@ -222,7 +235,7 @@ function aiMove() {
         currentPlayerDisplay.textContent = 'AI';
         isAiThinking = true;
         renderBoard();
-        setTimeout(() => aiMove(), 500);
+        aiMove();
     }
 }
 
