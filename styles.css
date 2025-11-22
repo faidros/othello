@@ -1,0 +1,70 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f0f0f0;
+}
+
+h1 {
+    color: #333;
+}
+
+#board {
+    display: grid;
+    grid-template-columns: repeat(8, 60px);
+    grid-template-rows: repeat(8, 60px);
+    gap: 2px;
+    border: 2px solid #333;
+    background-color: #228B22; /* Dark green */
+    background-image: radial-gradient(circle, #32CD32 1px, transparent 1px);
+    background-size: 10px 10px;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.cell {
+    width: 60px;
+    height: 60px;
+    background-color: #228B22;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+}
+
+.cell::before {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    right: 5px;
+    bottom: 5px;
+    background-color: #32CD32;
+    border-radius: 3px;
+    opacity: 0.7;
+}
+
+.piece {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    position: relative;
+    z-index: 1;
+}
+
+.black {
+    background-color: #000;
+}
+
+.white {
+    background-color: #fff;
+    border: 1px solid #ccc;
+}
+
+.cell.valid {
+    box-shadow: inset 0 0 10px rgba(0, 255, 0, 0.5);
+    cursor: pointer;
+}
