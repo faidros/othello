@@ -30,6 +30,7 @@ Ett enkelt webbaserat Othello-spel byggt med HTML, CSS och JavaScript.
 - **Nivå 1**: AI:n väljer slumpmässiga giltiga drag.
 - **Nivå 2**: AI:n använder enkel strategi – föredrar hörn och undviker dåliga kanter.
 - **Nivå 3**: AI:n använder avancerad strategi med minimax för bättre beslut.
+- **Nivå 4**: AI:n använder expertstrategi med djupare minimax för mycket utmanande spel.
 
 ## Teknologier
 
