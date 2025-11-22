@@ -10,6 +10,7 @@ const gameDiv = document.getElementById('game');
 let boardState = Array(8).fill().map(() => Array(8).fill(null));
 let currentPlayer = 'black';
 let aiLevel = 1;
+let isAiThinking = false;
 
 startGameButton.addEventListener('click', () => {
     aiLevel = parseInt(levelSelect.value);
@@ -41,10 +42,12 @@ function renderBoard() {
             cell.classList.add('cell');
             cell.dataset.row = row;
             cell.dataset.col = col;
-            if (currentPlayer === 'black' && boardState[row][col] === null && canPlace(row, col, 'black')) {
+            if (currentPlayer === 'black' && boardState[row][col] === null && canPlace(row, col, 'black') && !isAiThinking) {
                 cell.classList.add('valid');
             }
-            cell.addEventListener('click', () => makeMove(row, col));
+            if (!isAiThinking) {
+                cell.addEventListener('click', () => makeMove(row, col));
+            }
             if (boardState[row][col]) {
                 const piece = document.createElement('div');
                 piece.classList.add('piece', boardState[row][col]);
@@ -76,6 +79,8 @@ function makeMove(row, col) {
 
     // If it's AI's turn, make AI move after a short delay
     if (currentPlayer === 'white') {
+        isAiThinking = true;
+        renderBoard(); // Update to disable clicks
         setTimeout(() => aiMove(), 500);
     } else {
         // Check for game over or pass
@@ -204,6 +209,7 @@ function aiMove() {
     // Switch to human
     currentPlayer = 'black';
     currentPlayerDisplay.textContent = 'Svart';
+    isAiThinking = false;
 
     renderBoard();
     updateScores();
@@ -214,6 +220,8 @@ function aiMove() {
         // AI's turn again
         currentPlayer = 'white';
         currentPlayerDisplay.textContent = 'AI';
+        isAiThinking = true;
+        renderBoard();
         setTimeout(() => aiMove(), 500);
     }
 }
