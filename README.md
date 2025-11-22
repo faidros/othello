@@ -2,6 +2,10 @@
 
 Ett enkelt webbaserat Othello-spel byggt med HTML, CSS och JavaScript.
 
+## Version
+
+1.1
+
 ## Funktioner
 
 - 8x8 spelplan
