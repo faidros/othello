@@ -90,6 +90,8 @@ function makeMove(row, col) {
             currentPlayerDisplay.textContent = currentPlayer === 'black' ? 'Svart' : 'AI';
             if (getValidMoves(currentPlayer).length === 0) {
                 alert(getWinner());
+            } else {
+                renderBoard();
             }
         }
     }
@@ -191,9 +193,12 @@ function aiMove() {
         // Pass turn
         currentPlayer = 'black';
         currentPlayerDisplay.textContent = 'Svart';
+        isAiThinking = false;
         const humanValidMoves = getValidMoves('black');
         if (humanValidMoves.length === 0) {
             alert(getWinner());
+        } else {
+            renderBoard();
         }
         return;
     }
