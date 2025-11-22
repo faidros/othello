@@ -202,11 +202,20 @@ function aiMove() {
     if (aiLevel === 1) {
         // Random move
         move = validMoves[Math.floor(Math.random() * validMoves.length)];
-    } else {
+    } else if (aiLevel === 2) {
         // Strategic move: choose highest heuristic value
         move = validMoves.reduce((best, current) => {
             const bestScore = getHeuristicScore(best.row, best.col);
             const currentScore = getHeuristicScore(current.row, current.col);
+            return currentScore > bestScore ? current : best;
+        });
+    } else if (aiLevel === 3) {
+        // Advanced: minimax depth 1
+        move = validMoves.reduce((best, current) => {
+            const bestBoard = simulateMove(boardState, best, currentPlayer);
+            const bestScore = minimax(bestBoard, 1, false);
+            const currentBoard = simulateMove(boardState, current, currentPlayer);
+            const currentScore = minimax(currentBoard, 1, false);
             return currentScore > bestScore ? current : best;
         });
     }
@@ -261,8 +270,121 @@ function getHeuristicScore(row, col) {
     return score;
 }
 
-// Auto start with level 1
-aiLevel = 1;
-setupDiv.style.display = 'none';
-gameDiv.style.display = 'block';
-initBoard();
+function deepCopyBoard(board) {
+    return board.map(row => row.slice());
+}
+
+function getValidMovesForBoard(board, player) {
+    const validMoves = [];
+    for (let row = 0; row < 8; row++) {
+        for (let col = 0; col < 8; col++) {
+            if (board[row][col] === null && canPlaceForBoard(board, row, col, player)) {
+                validMoves.push({ row, col });
+            }
+        }
+    }
+    return validMoves;
+}
+
+function canPlaceForBoard(board, row, col, player) {
+    const opponent = player === 'black' ? 'white' : 'black';
+    const directions = [
+        [-1, -1], [-1, 0], [-1, 1],
+        [0, -1],           [0, 1],
+        [1, -1],  [1, 0],  [1, 1]
+    ];
+
+    for (const [dr, dc] of directions) {
+        let r = row + dr;
+        let c = col + dc;
+        let hasOpponent = false;
+        while (r >= 0 && r < 8 && c >= 0 && c < 8) {
+            if (board[r][c] === opponent) {
+                hasOpponent = true;
+            } else if (board[r][c] === player) {
+                if (hasOpponent) return true;
+                break;
+            } else {
+                break;
+            }
+            r += dr;
+            c += dc;
+        }
+    }
+    return false;
+}
+
+function simulateMove(board, move, player) {
+    const newBoard = deepCopyBoard(board);
+    const { row, col } = move;
+    newBoard[row][col] = player;
+    flipPiecesForBoard(newBoard, row, col, player);
+    return newBoard;
+}
+
+function flipPiecesForBoard(board, row, col, player) {
+    const opponent = player === 'black' ? 'white' : 'black';
+    const directions = [
+        [-1, -1], [-1, 0], [-1, 1],
+        [0, -1],           [0, 1],
+        [1, -1],  [1, 0],  [1, 1]
+    ];
+
+    for (const [dr, dc] of directions) {
+        let r = row + dr;
+        let c = col + dc;
+        const toFlip = [];
+        while (r >= 0 && r < 8 && c >= 0 && c < 8 && board[r][c] === opponent) {
+            toFlip.push([r, c]);
+            r += dr;
+            c += dc;
+        }
+        if (r >= 0 && r < 8 && c >= 0 && c < 8 && board[r][c] === player && toFlip.length > 0) {
+            toFlip.forEach(([fr, fc]) => board[fr][fc] = player);
+        }
+    }
+}
+
+function evaluateBoard(board) {
+    let score = 0;
+    for (let row = 0; row < 8; row++) {
+        for (let col = 0; col < 8; col++) {
+            if (board[row][col] === 'white') {
+                score += 1 + getHeuristicScore(row, col);
+            } else if (board[row][col] === 'black') {
+                score -= 1 + getHeuristicScore(row, col);
+            }
+        }
+    }
+    // Mobility
+    const whiteMoves = getValidMovesForBoard(board, 'white').length;
+    const blackMoves = getValidMovesForBoard(board, 'black').length;
+    score += whiteMoves - blackMoves;
+    return score;
+}
+
+function minimax(board, depth, maximizing) {
+    if (depth === 0) return evaluateBoard(board);
+    const player = maximizing ? 'white' : 'black';
+    const validMoves = getValidMovesForBoard(board, player);
+    if (validMoves.length === 0) return evaluateBoard(board);
+    if (maximizing) {
+        let maxEval = -Infinity;
+        for (const move of validMoves) {
+            const newBoard = simulateMove(board, move, player);
+            const eval = minimax(newBoard, depth - 1, false);
+            maxEval = Math.max(maxEval, eval);
+        }
+        return maxEval;
+    } else {
+        let minEval = Infinity;
+        for (const move of validMoves) {
+            const newBoard = simulateMove(board, move, player);
+            const eval = minimax(newBoard, depth - 1, true);
+            minEval = Math.min(minEval, eval);
+        }
+        return minEval;
+    }
+}
+
+// Auto start removed to allow level selection
